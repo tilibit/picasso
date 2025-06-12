@@ -7,7 +7,7 @@ with open("readme.rst", encoding="utf-8") as readme_file:
     long_description = readme_file.read()
 
 setup(
-    name="picassosr",
+    name="tilibit-picassosr",
     version="0.8.0",
     author="Joerg Schnitzbauer, Maximilian T. Strauss, Rafal Kowalewski",
     author_email=("joschnitzbauer@gmail.com, straussmaximilian@gmail.com, rafalkowalewski998@gmail.com"),
