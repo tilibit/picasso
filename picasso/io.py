@@ -378,11 +378,11 @@ class ND2Movie(AbstractPicassoMovie):
 
         self.meta = self.get_metadata(nd2file)
 
-        self.nd2data = ND2Reader(self.path)
+        self.nd2data = nd2.imread(self.path)
         self._shape = [
-            self.nd2data.metadata['num_frames'],
-            self.nd2data.metadata['width'],
-            self.nd2data.metadata['height'],
+            self.nd2data.shape[0],
+            self.nd2data.shape[1],
+            self.nd2data.shape[2],
         ]
 
     def info(self):
@@ -621,7 +621,7 @@ class ND2Movie(AbstractPicassoMovie):
             frame : 2D array
                 the image data of the frame
         """
-        return self.nd2data[index]
+        return self.nd2data[index, ...]
 
     def tofile(self, file_handle, byte_order=None):
         raise NotImplementedError('Cannot write .nd2 file.')
