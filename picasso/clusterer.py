@@ -150,6 +150,24 @@ def frame_analysis(labels: np.ndarray, frame: np.ndarray) -> np.ndarray:
 
     return labels
 
+def _get_neighbors(X:np.ndarray,tree:KDTree,radius:float,max_slice:int=10000)->list[list[int]]:
+    n_locs = X.shape[0]
+    if n_locs <=max_slice:
+        return tree.query_ball_tree(tree, radius)
+    
+    n_slices = n_locs // max_slice if n_locs % max_slice == 0 else n_locs // max_slice + 1
+
+    neighbors = []
+    for k in range(n_slices):
+        idx_start = k * max_slice
+        idx_end = (k + 1) * max_slice
+        idx_end = min(n_locs, idx_end)
+        print(f"slice {k} = {idx_start}:{idx_end}")
+        X_slice = X[idx_start:idx_end, :]
+        slice_tree = KDTree(X_slice)
+        neighbors_slice = slice_tree.query_ball_tree(tree, radius)
+        neighbors.extend(neighbors_slice)
+    return neighbors
 
 def _cluster(
     X: np.ndarray,
@@ -195,7 +213,8 @@ def _cluster(
     tree = KDTree(X)
 
     # find neighbors for each point within radius
-    neighbors = tree.query_ball_tree(tree, radius)
+    neighbors = _get_neighbors(X,tree,radius)
+    # neighbors = tree.query_ball_tree(tree, radius)
 
     # find local maxima, i.e., points with the most neighbors within
     # their neighborhood
